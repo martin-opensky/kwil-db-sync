@@ -23,8 +23,8 @@ const client = new DbSyncService(
 
 client.Sync(
   {
-    originalDbid: 'xd7e15fba3742a2911235d3f7183e6899691e10c873bbb51085bd64d8',
-    localProviderDbid: 1691147560,
+    originalDbId: 'xd7e15fba3742a2911235d3f7183e6899691e10c873bbb51085bd64d8',
+    localProviderDbId: 1691147560,
     providerAddress: 1691147560180,
   },
   (err, response) => {

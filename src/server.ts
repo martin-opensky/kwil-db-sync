@@ -19,9 +19,9 @@ const server = new grpc.Server();
 // @ts-ignore
 server.addService(protoDescriptor.DbSyncService.service, {
   Sync: (call: any, callback: Function) => {
-    const { originalDbid, localProviderDbid, providerAddress } = call.request;
+    const { originalDbId, localProviderDbid, providerAddress } = call.request;
 
-    console.log('originalDbid', originalDbid);
+    console.log('originalDbId', originalDbId);
     console.log('localProviderDbid', localProviderDbid);
     console.log('providerAddress', providerAddress);
 
@@ -34,7 +34,7 @@ server.addService(protoDescriptor.DbSyncService.service, {
 });
 
 server.bindAsync(
-  '127.0.0.1:50061',
+  'dns:///kwil-db-sync:50061',
   grpc.ServerCredentials.createInsecure(),
   (err, port) => {
     if (err) {
