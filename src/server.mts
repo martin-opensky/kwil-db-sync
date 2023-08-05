@@ -1,6 +1,7 @@
 import grpc from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import { resolve } from 'path';
+import DbSync from './db-sync.mjs';
 
 const protoPath = resolve('./proto/db-sync.proto');
 
@@ -21,9 +22,9 @@ server.addService(protoDescriptor.DbSyncService.service, {
   Sync: (call: any, callback: Function) => {
     const { originalDbId, localProviderDbid, providerAddress } = call.request;
 
-    console.log('originalDbId', originalDbId);
-    console.log('localProviderDbid', localProviderDbid);
-    console.log('providerAddress', providerAddress);
+    const dbSync = new DbSync(originalDbId, localProviderDbid, providerAddress);
+
+    dbSync.restore();
 
     const response = {
       status: 'ok',

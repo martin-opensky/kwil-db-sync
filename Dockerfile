@@ -17,5 +17,5 @@ COPY . .
 RUN yarn build
 
 # Command to run the application
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server.mjs"]
 
