@@ -55,10 +55,13 @@ export default class DbSync {
     console.log('providerAddress', providerAddress);
 
     this.kwil = new NodeKwil({
-      kwilProvider: 'http://kwil:8080',
+      kwilProvider: process.env.KWIL_PROVIDER_URL as string,
     });
 
-    this.signer = new Wallet(process.env.KWILD_PRIVATE_KEY as string);
+    this.signer = new Wallet(process.env.ADMIN_PRIVATE_KEY as string);
+    const address = this.signer.getAddress();
+    console.log('signer address', address);
+    console.log('PK', process.env.ADMIN_PRIVATE_KEY);
 
     this.originalDbId = originalDbId;
     this.localProviderDbid = localProviderDbid;
@@ -81,16 +84,6 @@ export default class DbSync {
 
   async syncCron() {
     console.log('syncCron: Starting CRON');
-
-    // const response = await this.kwil.selectQuery(
-    //   this.localProviderDbid,
-    //   'SELECT IFNULL(action_timestamp, 0) as action_timestamp FROM db_sync_history ORDER BY action_timestamp DESC LIMIT 0,1'
-    // );
-
-    // if (response.status == 200 && response?.data) {
-    //   // @ts-ignore
-    //   this.lastActionTimestamp = response.data[0]?.action_timestamp ?? 0;
-    // }
 
     const job = new CronJob('*/10 * * * * *', async () => {
       console.log(

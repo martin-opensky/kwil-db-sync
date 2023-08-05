@@ -1,5 +1,4 @@
 import { request, gql } from 'graphql-request';
-import fetch from 'node-fetch';
 
 type Tag = {
   name: string;
@@ -59,8 +58,12 @@ export const query = async (originalDbId: string, timestampFrom: number) => {
 
   console.log(timestampFrom, variables.timestampTo);
 
+  if (!process.env.BUNDLR_NODE_URL) {
+    throw new Error('BUNDLR_NODE_URL is not defined');
+  }
+
   const data: Response = await request(
-    'https://node2.bundlr.network/graphql',
+    `${process.env.BUNDLR_NODE_URL}/graphql`,
     document,
     variables
   );

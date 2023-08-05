@@ -34,8 +34,12 @@ server.addService(protoDescriptor.DbSyncService.service, {
   },
 });
 
+if (!process.env.DB_SYNC_GRPC_URL) {
+  throw new Error('DB_SYNC_GRPC_URL is not defined');
+}
+
 server.bindAsync(
-  'dns:///kwil-db-sync:50061',
+  process.env.DB_SYNC_GRPC_URL,
   grpc.ServerCredentials.createInsecure(),
   (err, port) => {
     if (err) {
