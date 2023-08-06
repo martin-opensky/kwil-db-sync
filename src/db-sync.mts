@@ -177,10 +177,46 @@ export default class DbSync {
         inputs.put(name, value);
       }
 
+      try {
+        const actionTx = await this.kwil
+          .actionBuilder()
+          .dbid(this.localProviderDbid)
+          .name(actionName)
+          .concat(inputs)
+          .signer(this.signer)
+          .buildTx();
+
+        const actionResult = await this.kwil.broadcast(actionTx);
+
+        if (actionResult.status === 200) {
+          console.log('Action executed successfully', action.id);
+          await this.saveToDbSyncHistory(action);
+        }
+
+        counter++;
+
+        const progress = (counter / actionsToExecute.length) * 100;
+
+        console.log(`Restoring ${progress.toFixed(2)}% complete`);
+      } catch (e) {
+        console.log('Kwil Error', e);
+      }
+    }
+  }
+
+  private async saveToDbSyncHistory(action: ActionToSync) {
+    try {
+      const inputs = new Utils.ActionInput()
+        .put('$id', action.id)
+        .put('$action_timestamp', action.timestamp)
+        .put('$arweave_id', action.arweaveId)
+        .put('$provider_address', this.providerAddress)
+        .put('$executed_at', new Date().getTime());
+
       const actionTx = await this.kwil
         .actionBuilder()
         .dbid(this.localProviderDbid)
-        .name(actionName)
+        .name('save_db_sync')
         .concat(inputs)
         .signer(this.signer)
         .buildTx();
@@ -188,38 +224,10 @@ export default class DbSync {
       const actionResult = await this.kwil.broadcast(actionTx);
 
       if (actionResult.status === 200) {
-        console.log('Action executed successfully', action.id);
-        await this.saveToDbSyncHistory(action);
+        console.log('Saved to DB Sync History successfully', action.id);
       }
-
-      counter++;
-
-      const progress = (counter / actionsToExecute.length) * 100;
-
-      console.log(`Restoring ${progress.toFixed(2)}% complete`);
-    }
-  }
-
-  private async saveToDbSyncHistory(action: ActionToSync) {
-    const inputs = new Utils.ActionInput()
-      .put('$id', action.id)
-      .put('$action_timestamp', action.timestamp)
-      .put('$arweave_id', action.arweaveId)
-      .put('$provider_address', this.providerAddress)
-      .put('$executed_at', new Date().getTime());
-
-    const actionTx = await this.kwil
-      .actionBuilder()
-      .dbid(this.localProviderDbid)
-      .name('save_db_sync')
-      .concat(inputs)
-      .signer(this.signer)
-      .buildTx();
-
-    const actionResult = await this.kwil.broadcast(actionTx);
-
-    if (actionResult.status === 200) {
-      console.log('Saved to DB Sync History successfully', action.id);
+    } catch (e) {
+      console.log('Kwil Error', e);
     }
   }
 }
