@@ -20,9 +20,9 @@ const server = new grpc.Server();
 // @ts-ignore
 server.addService(protoDescriptor.DbSyncService.service, {
   Sync: (call: any, callback: Function) => {
-    const { originalDbid, localProviderDbid, providerAddress } = call.request;
+    const { originalDbId, localProviderDbId, providerAddress } = call.request;
 
-    const dbSync = new DbSync(originalDbid, localProviderDbid, providerAddress);
+    const dbSync = new DbSync(originalDbId, localProviderDbId, providerAddress);
 
     dbSync.restore();
 

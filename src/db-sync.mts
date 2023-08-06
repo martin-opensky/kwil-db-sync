@@ -38,20 +38,20 @@ type ActionToSync = {
 };
 
 export default class DbSync {
-  originalDbid: string;
-  localProviderDbid: string;
+  originalDbId: string;
+  localProviderDbId: string;
   providerAddress: string;
   kwil: NodeKwil;
   signer: Signer;
   lastActionTimestamp: number = 0;
 
   constructor(
-    originalDbid: string,
-    localProviderDbid: string,
+    originalDbId: string,
+    localProviderDbId: string,
     providerAddress: string
   ) {
-    console.log('originalDbid', originalDbid);
-    console.log('localProviderDbid', localProviderDbid);
+    console.log('originalDbId', originalDbId);
+    console.log('localProviderDbId', localProviderDbId);
     console.log('providerAddress', providerAddress);
 
     this.kwil = new NodeKwil({
@@ -63,14 +63,14 @@ export default class DbSync {
     console.log('signer address', address);
     console.log('PK', process.env.ADMIN_PRIVATE_KEY);
 
-    this.originalDbid = originalDbid;
-    this.localProviderDbid = localProviderDbid;
+    this.originalDbId = originalDbId;
+    this.localProviderDbId = localProviderDbId;
     this.providerAddress = providerAddress;
   }
 
   async restore() {
     const timestampFrom = 0;
-    const data: ResponseData = await query(this.originalDbid, timestampFrom);
+    const data: ResponseData = await query(this.originalDbId, timestampFrom);
 
     if (data && data.transactions && data.transactions.edges.length > 0) {
       await this.processResponse(data);
@@ -95,7 +95,7 @@ export default class DbSync {
 
       // TODO: Need to update lastTimestamp whenever transactions have been found
       const data: ResponseData = await query(
-        this.originalDbid,
+        this.originalDbId,
         this.lastActionTimestamp
       );
 
@@ -180,7 +180,7 @@ export default class DbSync {
       try {
         const actionTx = await this.kwil
           .actionBuilder()
-          .dbid(this.localProviderDbid)
+          .dbid(this.localProviderDbId)
           .name(actionName)
           .concat(inputs)
           .signer(this.signer)
@@ -215,7 +215,7 @@ export default class DbSync {
 
       const actionTx = await this.kwil
         .actionBuilder()
-        .dbid(this.localProviderDbid)
+        .dbid(this.localProviderDbId)
         .name('save_db_sync')
         .concat(inputs)
         .signer(this.signer)
