@@ -49,9 +49,9 @@ const document = gql`
   }
 `;
 
-export const query = async (originalDbId: string, timestampFrom: number) => {
+export const query = async (originalDbid: string, timestampFrom: number) => {
   const variables = {
-    dbid: originalDbId,
+    dbid: originalDbid,
     timestampFrom,
     timestampTo: new Date().getTime(),
   };

@@ -38,7 +38,7 @@ type ActionToSync = {
 };
 
 export default class DbSync {
-  originalDbId: string;
+  originalDbid: string;
   localProviderDbid: string;
   providerAddress: string;
   kwil: NodeKwil;
@@ -46,11 +46,11 @@ export default class DbSync {
   lastActionTimestamp: number = 0;
 
   constructor(
-    originalDbId: string,
+    originalDbid: string,
     localProviderDbid: string,
     providerAddress: string
   ) {
-    console.log('originalDbId', originalDbId);
+    console.log('originalDbid', originalDbid);
     console.log('localProviderDbid', localProviderDbid);
     console.log('providerAddress', providerAddress);
 
@@ -63,14 +63,14 @@ export default class DbSync {
     console.log('signer address', address);
     console.log('PK', process.env.ADMIN_PRIVATE_KEY);
 
-    this.originalDbId = originalDbId;
+    this.originalDbid = originalDbid;
     this.localProviderDbid = localProviderDbid;
     this.providerAddress = providerAddress;
   }
 
   async restore() {
     const timestampFrom = 0;
-    const data: ResponseData = await query(this.originalDbId, timestampFrom);
+    const data: ResponseData = await query(this.originalDbid, timestampFrom);
 
     if (data && data.transactions && data.transactions.edges.length > 0) {
       await this.processResponse(data);
@@ -95,7 +95,7 @@ export default class DbSync {
 
       // TODO: Need to update lastTimestamp whenever transactions have been found
       const data: ResponseData = await query(
-        this.originalDbId,
+        this.originalDbid,
         this.lastActionTimestamp
       );
 
